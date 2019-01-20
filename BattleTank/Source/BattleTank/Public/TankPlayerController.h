@@ -20,4 +20,25 @@ public:
 	ATank* GetControlledTank() const;
 
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	// moving the barrel towards the crosshair
+	void AimTowardsCrosshair();
+
+	bool GetSightRayHitLocation(FVector&) const;
+
+	bool GetLookDirection(FVector2D, FVector&) const;
+
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
+
+	UPROPERTY(EditAnywhere)
+	float CrossHairXLocation = 0.5;
+
+	UPROPERTY(EditAnywhere)
+	float CrossHairYLocation = 0.33333;
+
+	UPROPERTY(EditAnywhere)
+	float LineTraceRange = 1000000;
 };
