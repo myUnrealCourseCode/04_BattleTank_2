@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankBarrel.h"
 #include "TankAimingComponent.h"
+#include "TankBarrel.h"
+#include "TankTurret.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -46,12 +47,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed, bool De
 		MoveBarrelTowards(AimDirection);
 
 		auto time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution found"), time);
+		//UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution found"), time);
 		return;
 	}
 
-		auto time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f No aim Solution found"), time);
+		//UE_LOG(LogTemp, Warning, TEXT("%f No aim Solution found"), time);
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
@@ -63,10 +63,18 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
 	auto time = GetWorld()->GetTimeSeconds();
 
 	Barrel->Elevate(DeltaRotator.Pitch);
-	// move the barrel the right amount 
+	// move the barrel the right amount
+	Turret->Rotate(DeltaRotator.Yaw);
 }
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet) {
 
+	if (!BarrelToSet) { return; }
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet) {
+
+	if (!TurretToSet) { return; }
+	Turret = TurretToSet;
 }

@@ -7,7 +7,9 @@
 #include "Tank.generated.h"
 
 class UTankBarrel;
+class UTankTurret;
 class UTankAimingComponent;
+class AProjectile;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -26,16 +28,31 @@ public:
 
 	void AimAt(FVector OutHitLocation);
 
+	UFUNCTION(BlueprintCallable, Category= Setup)
+	void Fire();
+
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 100000; // TODO find sensible default
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetTurretReference(UTankTurret* TurretToSet);
+
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	bool ProjectileDebugLine = true; // Show Debug line for projectile suggestion?
+	float LaunchSpeed = 4000;
 
+	UPROPERTY(EditAnywhere, Category = Firing)
+	bool ProjectileDebugLine = false; // Show Debug line for projectile suggestion?
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint = nullptr; // There is a an alternative called TSubclassOf<>()
+
+private:
+
+	// Local Reference for spawning projectile
+	UTankBarrel* Barrel = nullptr;
 protected:
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
+
 };
