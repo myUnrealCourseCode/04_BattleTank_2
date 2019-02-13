@@ -21,47 +21,37 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void AimAt(FVector OutHitLocation);
 
-	UFUNCTION(BlueprintCallable, Category= Setup)
+	UFUNCTION(BlueprintCallable, Category= "Setup")
 	void Fire();
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTurretReference(UTankTurret* TurretToSet);
-
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float ReloadTimeInSeconds = 3;
 
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 4000;
 
-	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	bool ProjectileDebugLine = false; // Show Debug line for projectile suggestion?
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint = nullptr; // There is a an alternative called TSubclassOf<>()
 
-private:
-
-	// Local Reference for spawning projectile
-	UTankBarrel* Barrel = nullptr;
+	UTankBarrel* BarrelForTank = nullptr; // TODO remove
 
 	double LastFireTime = 0;
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetTankAimingComponent(UTankAimingComponent* TankAimingComponent);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void SetBarrelForReference(UTankBarrel* Barrel);
 
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent = nullptr;
-
-	UPROPERTY(BlueprintReadOnly)
-	UTankMovementComponent* TankMovementComponent = nullptr;
 };

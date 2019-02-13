@@ -14,38 +14,35 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+	auto TankName = GetName();
+	UE_LOG (LogTemp, Warning, TEXT("Donkey: %s C++ Constructor"), *TankName)
 }
 
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
-{
+void ATank::BeginPlay() {
+
 	Super::BeginPlay();
-	
-}
 
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	auto TankName = GetName();
+	UE_LOG(LogTemp, Warning, TEXT("Donkey: %s C++ Begin Play"), *TankName)
 }
 
 void ATank::AimAt(FVector HitLocation) {
 
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed, ProjectileDebugLine);
 }
 
 void ATank::Fire() {
 
+	if (!ensure(BarrelForTank)) { return; }
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (Barrel && isReloaded) {
+	if (BarrelForTank && isReloaded) {
 		// Spawn a projectile at the socket location
 		AProjectile* Projectie = GetWorld()->SpawnActor<AProjectile>(
 			ProjectileBlueprint,
-			Barrel->GetSocketLocation(FName("Fire")),
-			Barrel->GetSocketRotation(FName("Fire"))
+			BarrelForTank->GetSocketLocation(FName("Fire")),
+			BarrelForTank->GetSocketRotation(FName("Fire"))
 			);
 
 		Projectie->LaunchProjectile(LaunchSpeed);
@@ -54,13 +51,12 @@ void ATank::Fire() {
 	}
 }
 
-void ATank::SetBarrelReference(UTankBarrel * BarrelToSet) {
+void ATank::SetTankAimingComponent(UTankAimingComponent * TankAimingComponent) {
 
-	TankAimingComponent->SetBarrelReference(BarrelToSet);
-	Barrel = BarrelToSet;
+	this->TankAimingComponent = TankAimingComponent;
 }
 
-void ATank::SetTurretReference(UTankTurret * TurretToSet) {
+void ATank::SetBarrelForReference(UTankBarrel * Barrel) {
 
-	TankAimingComponent->SetTurretReference(TurretToSet);
+	BarrelForTank = Barrel;
 }
