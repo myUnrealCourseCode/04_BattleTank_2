@@ -8,9 +8,7 @@
 
 class UTankBarrel;
 class UTankTurret;
-class UTankAimingComponent;
 class AProjectile;
-class UTankMovementComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -23,14 +21,13 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void AimAt(FVector OutHitLocation);
-
 	UFUNCTION(BlueprintCallable, Category= "Setup")
 	void Fire();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float ReloadTimeInSeconds = 3;
 
+	// TOD remove once firing is moved to aiming component
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 4000;
 
@@ -45,13 +42,5 @@ public:
 	double LastFireTime = 0;
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-	void SetTankAimingComponent(UTankAimingComponent* TankAimingComponent);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void SetBarrelForReference(UTankBarrel* Barrel);
-
-protected:
-
-	UPROPERTY(BlueprintReadOnly)
-	UTankAimingComponent* TankAimingComponent = nullptr;
 };

@@ -3,8 +3,6 @@
 #include "Tank.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
-#include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "Engine/World.h"
 
 
@@ -15,7 +13,6 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	auto TankName = GetName();
-	UE_LOG (LogTemp, Warning, TEXT("Donkey: %s C++ Constructor"), *TankName)
 }
 
 void ATank::BeginPlay() {
@@ -23,13 +20,6 @@ void ATank::BeginPlay() {
 	Super::BeginPlay();
 
 	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Donkey: %s C++ Begin Play"), *TankName)
-}
-
-void ATank::AimAt(FVector HitLocation) {
-
-	if (!ensure(TankAimingComponent)) { return; }
-	TankAimingComponent->AimAt(HitLocation, LaunchSpeed, ProjectileDebugLine);
 }
 
 void ATank::Fire() {
@@ -37,7 +27,7 @@ void ATank::Fire() {
 	if (!ensure(BarrelForTank)) { return; }
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (BarrelForTank && isReloaded) {
+	if (isReloaded) {
 		// Spawn a projectile at the socket location
 		AProjectile* Projectie = GetWorld()->SpawnActor<AProjectile>(
 			ProjectileBlueprint,
@@ -49,11 +39,6 @@ void ATank::Fire() {
 
 		LastFireTime = FPlatformTime::Seconds();
 	}
-}
-
-void ATank::SetTankAimingComponent(UTankAimingComponent * TankAimingComponent) {
-
-	this->TankAimingComponent = TankAimingComponent;
 }
 
 void ATank::SetBarrelForReference(UTankBarrel * Barrel) {

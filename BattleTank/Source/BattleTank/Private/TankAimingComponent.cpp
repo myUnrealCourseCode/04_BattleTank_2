@@ -19,7 +19,7 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed, bool DebugLine) {
+void UTankAimingComponent::AimAt(FVector HitLocation) {
 
 	if (!ensure(Barrel)) { return; }
 
@@ -40,18 +40,16 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed, bool De
 		ESuggestProjVelocityTraceOption::DoNotTrace,
 		FCollisionResponseParams::DefaultResponseParam,
 		TArray<AActor*>(),
-		DebugLine)) {
+		false)) {
 
 		FVector AimDirection = OutLaunchVelocity.GetSafeNormal();
 
 		MoveBarrelTowards(AimDirection);
 
 		auto time = GetWorld()->GetTimeSeconds();
-		//UE_LOG(LogTemp, Warning, TEXT("%f Aim Solution found"), time);
 		return;
 	}
 
-		//UE_LOG(LogTemp, Warning, TEXT("%f No aim Solution found"), time);
 }
 
 void UTankAimingComponent::Initialize(UTankBarrel * Barrel, UTankTurret * Turret) {
