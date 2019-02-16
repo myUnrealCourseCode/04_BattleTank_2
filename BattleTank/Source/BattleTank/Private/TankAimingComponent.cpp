@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,9 +15,23 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+}
+
+void UTankAimingComponent::BeginPlay() {
+
+	// so that first fire is after initial reload
+	LastFireTime = FPlatformTime::Seconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) {
+
+	if (FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds) {
+		FiringState = EFiringState::Reloading;
+	}
+	// TODO handle aiming and locked states
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation) {
@@ -50,6 +65,24 @@ void UTankAimingComponent::AimAt(FVector HitLocation) {
 		return;
 	}
 
+}
+
+void UTankAimingComponent::Fire() {
+
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+
+	if (FiringState != EFiringState::Reloading) {
+		// Spawn a projectile at the socket location
+		AProjectile* Projectie = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Fire")),
+			Barrel->GetSocketRotation(FName("Fire"))
+			);
+
+		Projectie->LaunchProjectile(LaunchSpeed);
+
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
 
 void UTankAimingComponent::Initialize(UTankBarrel * Barrel, UTankTurret * Turret) {
