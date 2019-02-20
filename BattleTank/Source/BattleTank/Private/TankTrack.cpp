@@ -32,10 +32,11 @@ void UTankTrack::ApplySidewayForce() {
 
 void UTankTrack::SetThrottle(float Throttle) {
 
-	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1, 1);
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1.0, 1.0); // beacause both intent forward and intend right is setting the throttle on each frame of have to add the value instead of assigning it right away (intend right is called first)
 }
 
 void UTankTrack::DriveTrack() {
+
 	auto ForceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
 	auto ForceLocation = GetComponentLocation();
 

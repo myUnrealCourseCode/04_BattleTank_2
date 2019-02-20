@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint = nullptr; // There is a an alternative called TSubclassOf<>()
 
+	EFiringState GetFiringState();
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")

@@ -34,7 +34,9 @@ void ATankPlayerController::AimTowardsCrosshair() {
 
 	FVector OutHitLocation;
 
-	if (GetSightRayHitLocation(OutHitLocation)) {
+	bool  bHitLocation = GetSightRayHitLocation(OutHitLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %i"), bHitLocation);
+	if (bHitLocation) {
 
 		AimingComponent->AimAt(OutHitLocation);
 	}
