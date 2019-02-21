@@ -20,5 +20,5 @@ protected:
 
 	// how close AI can get to player
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float AcceptanceRadius = 6000.f;
+	float AcceptanceRadius = 8000.f;
 };
