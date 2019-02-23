@@ -97,7 +97,7 @@ void UTankAimingComponent::Fire() {
 	}
 }
 
-int UTankAimingComponent::GetRoundsLeft() const {
+int32 UTankAimingComponent::GetRoundsLeft() const {
 	return RoundsLeft;
 }
 
@@ -120,11 +120,11 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) {
 	Barrel->Elevate(DeltaRotator.Pitch);
 	// move the barrel the right amount
 
-	if (DeltaRotator.Yaw < 180 ) {
+	if (FMath::Abs(DeltaRotator.Yaw) < 180 ) {
 
 		Turret->Rotate(DeltaRotator.Yaw);
 	}
-	else {
+	else { // avoid going the wrong way
 
 		Turret->Rotate(-DeltaRotator.Yaw);
 	}
