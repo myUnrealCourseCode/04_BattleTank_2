@@ -3,13 +3,14 @@
 #include "TankPlayerController.h"
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
+#include "Tank.h"
 
 
 
 void ATankPlayerController::BeginPlay() {
 
 	Super::BeginPlay();
-
+	if (!(GetPawn())) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
 	if (!ensure(AimingComponent)) { return; }
@@ -20,17 +21,37 @@ void ATankPlayerController::BeginPlay() {
 void ATankPlayerController::Tick(float DeltaTime) {
 
 	Super::Tick(DeltaTime);
+	
+	if (!(GetPawn())) { return; }
 
 	AimTowardsCrosshair();
 	//UE_LOG(LogTemp, Warning, TEXT("Player Controller Ticking"));
 }
 
+void ATankPlayerController::SetPawn(APawn * InPawn) {
+
+	Super::SetPawn(InPawn);
+
+	if (InPawn) {
+
+		auto OurTank = Cast <ATank>(InPawn);
+		if (!ensure(OurTank)) { return; }
+		OurTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnPossessedTankDeath);
+	}
+}
+
+void ATankPlayerController::OnPossessedTankDeath() {
+
+	StartSpectatingOnly();
+}
+
 void ATankPlayerController::AimTowardsCrosshair() {
+
+	if (!(GetPawn())) { return; }
+	if (!ensure(GetPawn())) { return; }
 
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
-
-	if (!ensure(GetPawn())) { return; }
 
 	FVector OutHitLocation;
 
