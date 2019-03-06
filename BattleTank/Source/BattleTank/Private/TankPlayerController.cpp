@@ -56,7 +56,6 @@ void ATankPlayerController::AimTowardsCrosshair() {
 	FVector OutHitLocation;
 
 	bool  bHitLocation = GetSightRayHitLocation(OutHitLocation);
-	//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %i"), bHitLocation);
 	if (bHitLocation) {
 
 		AimingComponent->AimAt(OutHitLocation);
@@ -92,7 +91,7 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 		OutHitResult,
 		StartLocation,
 		EndLocation,
-		ECC_Visibility)) {
+		ECC_Camera)) {
 
 		OutHitLocation = OutHitResult.Location;
 		return true;
